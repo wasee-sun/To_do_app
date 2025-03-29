@@ -35,3 +35,11 @@ export const completeTask = async (id, data) => {
 export const incompleteTask = async (id, data) => {
   return apiClient.post(`/todos/${id}/incomplete/`, data);
 };
+
+export const getBgImage = async () => {
+  return apiClient.get(`/bgimages/1/`);
+};
+
+export const changeBgImage = async (data) => {
+  return apiClient.patch(`/bgimages/1/`, data, true);
+};

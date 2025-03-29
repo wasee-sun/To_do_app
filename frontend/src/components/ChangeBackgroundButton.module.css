@@ -1,0 +1,23 @@
+.container {
+  display: inline-block;
+}
+
+.changeBackgroundButton {
+  padding: 10px 15px;
+  background-color: #8b5cf6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.changeBackgroundButton:hover {
+  background-color: #7c3aed;
+}
+
+.fileInput {
+  display: none;
+}

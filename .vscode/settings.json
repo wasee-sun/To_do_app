@@ -25,7 +25,8 @@
         "--disable=invalid-name",
         "--disable=too-many-ancestors",
         "--disable=no-member",
-        "--disable=too-few-public-methods"
+        "--disable=too-few-public-methods",
+        "--ignore=migrations, tests"
     ],
     
     // JavaScript/Prettier configuration

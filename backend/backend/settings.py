@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "backend.middlewares.resdirapimiddleware.RestrictDirectApiMiddleware",
+    "backend.middlewares.RestrictDirectApiMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -136,19 +137,31 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = "/static/"
-
-if HTTPS:
-    STATIC_ROOT = "/app/static"
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = "/app/static"
 
 # Media files
-MEDIA_URL = "/media/"
-
-if HTTPS:
+if DJANGO_ENV == "development":
+    if HTTPS:
+        MEDIA_URL = "https://todo-app.dev.local/media/"
+    else:
+        MEDIA_URL = "/media/"
     MEDIA_ROOT = "/app/media"
 else:
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+    MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/"
+    AWS_DEFAULT_ACL = None
+    AWS_S3_FILE_OVERWRITE = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -165,25 +178,17 @@ CACHES = {
     }
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://localhost",
-    "https://127.0.0.1",
-    "https://todo-app.dev.local",
-]
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000").split(
+    ","
+)
 
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF Settings
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://localhost",
-    "https://127.0.0.1",
-    "https://todo-app.dev.local",
-]
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "http://localhost:3000").split(
+    ","
+)
 
 CSRF_COOKIE_SECURE = True  # Ensures the CSRF cookie is sent only over HTTPS
 CSRF_COOKIE_HTTPONLY = True  # Must be False since JavaScript needs to read the token
@@ -195,3 +200,7 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "ORDERING_PARAM": "ordering",
 }
+
+# NGINX Proxy Settings
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

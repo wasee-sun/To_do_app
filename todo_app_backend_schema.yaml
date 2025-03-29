@@ -3,9 +3,490 @@ info:
   title: ''
   version: 0.0.0
 paths:
-  /backend-api/schema/:
+  /backend-api/bgimages/:
     get:
-      operationId: schema_retrieve
+      operationId: backend_api_bgimages_list
+      description: This endpoint is not supported. Use GET with an ID to retrieve
+        a specific BgImage.
+      summary: Get All BgImages(Not Supported)
+      tags:
+      - backend-api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '405':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Method not allowed. Use GET with an ID to retrieve a
+                      specific BgImage.
+          description: Method Not Allowed
+  /backend-api/bgimages/{id}/:
+    get:
+      operationId: backend_api_bgimages_retrieve
+      description: Retrieve details of a single BgImage item by ID.
+      summary: Get Single BgImage
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bg image.
+        required: true
+      tags:
+      - backend-api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BgImage'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: BgImage not found
+          description: Not Found - BgImage item does not exist
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+    patch:
+      operationId: backend_api_bgimages_partial_update
+      description: |-
+        Partially update an existing
+                                BgImage item by ID using PATCH (PUT is not supported).
+      summary: Partial Update BgImage
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bg image.
+        required: true
+      tags:
+      - backend-api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBgImage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBgImage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBgImage'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BgImage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Invalid request data
+          description: Bad Request - Invalid data
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: BgImage not found
+          description: Not Found - BgImage item does not exist
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+  /backend-api/todos/:
+    get:
+      operationId: backend_api_todos_list
+      description: |-
+        Retrieve a list of all todo items, optionally
+                                filtered by title or completed status.
+      summary: List All Todos
+      parameters:
+      - in: query
+        name: completed
+        schema:
+          type: boolean
+        description: Filter by completion status
+      - in: query
+        name: title
+        schema:
+          type: string
+        description: Filter by title (case-insensitive)
+      tags:
+      - backend-api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Invalid filter parameters
+          description: Bad Request - Invalid parameters
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+    post:
+      operationId: backend_api_todos_create
+      description: Create a new todo item.
+      summary: Create Todo
+      tags:
+      - backend-api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Todo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Todo'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Invalid request data
+          description: Bad Request - Invalid data
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+  /backend-api/todos/{id}/:
+    get:
+      operationId: backend_api_todos_retrieve
+      description: Retrieve details of a single todo item by ID.
+      summary: Get Single Todo
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this todo.
+        required: true
+      tags:
+      - backend-api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Todo not found
+          description: Not Found - Todo item does not exist
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+    patch:
+      operationId: backend_api_todos_partial_update
+      description: |-
+        Partially update an existing
+                                todo item by ID using PATCH (PUT is not supported).
+      summary: Partial Update Todo
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this todo.
+        required: true
+      tags:
+      - backend-api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTodo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTodo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTodo'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Invalid request data
+          description: Bad Request - Invalid data
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Todo not found
+          description: Not Found - Todo item does not exist
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+    delete:
+      operationId: backend_api_todos_destroy
+      description: Delete a todo item by ID.
+      summary: Delete Todo
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this todo.
+        required: true
+      tags:
+      - backend-api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Todo not found
+          description: Not Found - Todo item does not exist
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+  /backend-api/todos/{id}/complete/:
+    post:
+      operationId: backend_api_todos_complete_create
+      description: Mark a todo item as completed, setting completed_at to the current
+        time.
+      summary: Mark Todo as Complete
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this todo.
+        required: true
+      tags:
+      - backend-api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Todo not found
+          description: Not Found - Todo item does not exist
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+  /backend-api/todos/{id}/incomplete/:
+    post:
+      operationId: backend_api_todos_incomplete_create
+      description: Mark a todo item as incomplete, clearing the completed_at timestamp.
+      summary: Mark Todo as Incomplete
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this todo.
+        required: true
+      tags:
+      - backend-api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Todo not found
+          description: Not Found - Todo item does not exist
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: Internal Server Error
+          description: Internal Server Error
+  /swagger-api/schema/:
+    get:
+      operationId: swagger_api_schema_retrieve
       description: |-
         OpenApi3 schema for this API. Format can be selected via content negotiation.
 
@@ -124,7 +605,7 @@ paths:
           - zh-hans
           - zh-hant
       tags:
-      - schema
+      - swagger-api
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -149,353 +630,28 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /backend-api/todos/:
-    get:
-      operationId: todos_list
-      description: |-
-        Retrieve a list of all todo items, optionally
-                                filtered by title or completed status.
-      summary: List All Todos
-      parameters:
-      - in: query
-        name: completed
-        schema:
-          type: boolean
-        description: Filter by completion status
-      - in: query
-        name: title
-        schema:
-          type: string
-        description: Filter by title (case-insensitive)
-      tags:
-      - todos
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Todo'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Invalid filter parameters
-          description: Bad Request - Invalid parameters
-        '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Internal Server Error
-          description: Internal Server Error
-    post:
-      operationId: todos_create
-      description: Create a new todo item.
-      summary: Create Todo
-      tags:
-      - todos
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Todo'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Todo'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Todo'
-        required: true
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Todo'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Invalid request data
-          description: Bad Request - Invalid data
-        '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Internal Server Error
-          description: Internal Server Error
-  /backend-api/todos/{id}/:
-    get:
-      operationId: todos_retrieve
-      description: Retrieve details of a single todo item by ID.
-      summary: Get Single Todo
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this todo.
-        required: true
-      tags:
-      - todos
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Todo'
-          description: ''
-        '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Todo not found
-          description: Not Found - Todo item does not exist
-        '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Internal Server Error
-          description: Internal Server Error
-    patch:
-      operationId: todos_partial_update
-      description: |-
-        Partially update an existing
-                                todo item by ID using PATCH (PUT is not supported).
-      summary: Partial Update Todo
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this todo.
-        required: true
-      tags:
-      - todos
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTodo'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedTodo'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedTodo'
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Todo'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Invalid request data
-          description: Bad Request - Invalid data
-        '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Todo not found
-          description: Not Found - Todo item does not exist
-        '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Internal Server Error
-          description: Internal Server Error
-    delete:
-      operationId: todos_destroy
-      description: Delete a todo item by ID.
-      summary: Delete Todo
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this todo.
-        required: true
-      tags:
-      - todos
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-        '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Todo not found
-          description: Not Found - Todo item does not exist
-        '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Internal Server Error
-          description: Internal Server Error
-  /backend-api/todos/{id}/complete/:
-    post:
-      operationId: todos_complete_create
-      description: Mark a todo item as completed, setting completed_at to the current
-        time.
-      summary: Mark Todo as Complete
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this todo.
-        required: true
-      tags:
-      - todos
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Todo'
-          description: ''
-        '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Todo not found
-          description: Not Found - Todo item does not exist
-        '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Internal Server Error
-          description: Internal Server Error
-  /backend-api/todos/{id}/incomplete/:
-    post:
-      operationId: todos_incomplete_create
-      description: Mark a todo item as incomplete, clearing the completed_at timestamp.
-      summary: Mark Todo as Incomplete
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this todo.
-        required: true
-      tags:
-      - todos
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Todo'
-          description: ''
-        '404':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Todo not found
-          description: Not Found - Todo item does not exist
-        '500':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: Internal Server Error
-          description: Internal Server Error
 components:
   schemas:
+    BgImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        image:
+          type: string
+          format: uri
+      required:
+      - id
+    PatchedBgImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        image:
+          type: string
+          format: uri
     PatchedTodo:
       type: object
       properties:

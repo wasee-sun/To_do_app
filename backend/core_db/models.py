@@ -13,3 +13,13 @@ class Todo(models.Model):
     def __str__(self):
         """String representation of the Todo model."""
         return f"{self.title}"
+
+
+class BgImage(models.Model):
+    """Background image model."""
+
+    image = models.ImageField(upload_to="others/", default="others/bg-white.jpg")
+
+    def __str__(self):
+        """String representation of the BgImage model."""
+        return f"{self.image}"

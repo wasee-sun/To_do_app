@@ -5,20 +5,25 @@ export class ApiClient {
     this.baseURL = baseURL;
   }
 
-  async request(endpoint, method, data) {
+  async request(endpoint, method, data = null, isMultipart = null) {
     const url = `${this.baseURL}${endpoint}`;
     const options = {
       method: method,
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
         "NEXT-X-API-KEY": process.env.NEXT_PUBLIC_API_SECRET_KEY,
         ...(HTTPS && { Referer: process.env.NEXT_PUBLIC_BASE_HTTPS_URL }),
       },
       credentials: "include",
     };
 
-    if (data) {
+    if (isMultipart && data instanceof FormData) {
+      // For multipart/form-data
+      delete options.headers["Content-Type"];
+      options.body = data;
+    } else if (data) {
+      // For application/json
+      options.headers["Content-Type"] = "application/json";
       options.body = JSON.stringify(data);
     }
 
@@ -26,7 +31,8 @@ export class ApiClient {
       const response = await fetch(url, options);
 
       if (response.status >= 400) {
-        console.log("Some Error Occured");
+        const error = await response.json();
+        console.log(error);
         return null;
       }
 
@@ -49,8 +55,8 @@ export class ApiClient {
     return await this.request(endpoint, "POST", data);
   }
 
-  async patch(endpoint, data) {
-    return await this.request(endpoint, "PATCH", data);
+  async patch(endpoint, data, isMultipart = false) {
+    return await this.request(endpoint, "PATCH", data, isMultipart);
   }
 
   async put(endpoint, data) {

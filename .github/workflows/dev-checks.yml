@@ -28,11 +28,11 @@ jobs:
 
       - name: Check linting with ESLint
         run: |
-          npx eslint . --ext .js,.jsx,.ts,.tsx
+          npx eslint . --ext .js,.mjs,.jsx,.ts,.tsx
 
       - name: Check code formatting with Prettier
         run: |
-          npx prettier --check "**/*.{js,jsx,ts,tsx,css,json}"
+          npx prettier --check "**/*.{js,mjs,jsx,ts,tsx,css,json}"
 
   lint-and-test-backend:
     name: Lint and Test Backend
